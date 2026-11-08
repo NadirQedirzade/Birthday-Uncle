@@ -102,5 +102,7 @@ export const birthday = {
     openMenu: 'Menyunu aç',
     closeMenu: 'Menyunu bağla',
     mainNav: 'Əsas naviqasiya',
+    switchToLight: 'Açıq rejimə keç',
+    switchToDark: 'Tünd rejimə keç',
   },
 }

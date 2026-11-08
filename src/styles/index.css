@@ -14,8 +14,15 @@
 /*
   Design tokens (HIG: prefer semantic names over raw values).
 
-  Palette: true black, warm ivory text, one champagne accent. Nothing else.
-  Contrast on --color-canvas: label ≈ 18:1, label-2 ≈ 8:1, accent ≈ 12:1 (all above WCAG AAA for body).
+  Two palettes share the same names, so components never mention a theme:
+    - dark  (default token set): true black, warm ivory text, one champagne accent.
+    - light: warm paper white, near-black text, a deeper champagne so the accent stays readable.
+  The theme is the `data-theme` attribute on <html> (set before first paint by a tiny script in
+  index.html, then by src/lib/theme.ts). A subtree can force dark with data-theme="dark"; the
+  lightbox does, because photos are always viewed on a dark surface.
+
+  Contrast (WCAG): dark — label ≈ 17:1, label-2 ≈ 8.6:1, accent ≈ 10:1 on the canvas.
+                   light — label ≈ 16:1, label-2 ≈ 6.5:1, accent ≈ 5.8:1 on the canvas.
 
   Type: SF Pro on Apple devices (via -apple-system), Inter everywhere else. A text serif is kept for
   the human voice only: the tagline, the letter and the love line.
@@ -27,21 +34,85 @@
     serif;
   --font-hand: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
 
-  --color-canvas: #000000;
-  --color-raised: #121214;
-  --color-raised-2: #1b1b1e;
-  --color-label: #f5f1ea;
-  --color-label-2: #a9a49b;
-  --color-accent: #dcc08a;
-  --color-hairline: rgb(245 241 234 / 0.1);
-
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* `inline`: utilities read the raw variables below at the element, so a scoped theme just works. */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-raised: var(--raised);
+  --color-raised-2: var(--raised-2);
+  --color-label: var(--label);
+  --color-label-2: var(--label-2);
+  --color-accent: var(--accent);
+  --color-hairline: var(--hairline);
+  /* White on dark, black on light: translucent fills and edges (bg-ink/10, ring-ink/10). */
+  --color-ink: var(--ink);
+}
+
+/* Dark palette. Also used to force a dark region inside a light page. */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --canvas: #000000;
+  --raised: #121214;
+  --raised-2: #1b1b1e;
+  --label: #f5f1ea;
+  --label-2: #a9a49b;
+  --accent: #dcc08a;
+  --hairline: rgb(245 241 234 / 0.1);
+  --ink: #ffffff;
+
+  --glow: rgb(220 192 138 / 0.1); /* the pool of light behind the hero numeral */
+  --sheen: rgb(255 255 255 / 0.075); /* soft top light on raised surfaces */
+  --hl: rgb(255 255 255 / 0.14); /* one-pixel highlight on a surface's top edge */
+  --glass-rgb: 30 30 33;
+  --glass-shadow: rgb(0 0 0 / 0.8);
+  --bar-rgb: 0 0 0;
+
+  --gold-1: #fbf4e4; /* numeral: light on the top edge … */
+  --gold-2: #e6cb93;
+  --gold-3: #b99a5f; /* … falling to deeper champagne */
+
+  --paper: #f4efe4;
+  --paper-hl: rgb(255 255 255 / 0.7);
+  --paper-ring: transparent;
+  --paper-shadow: rgb(0 0 0 / 0.9);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --canvas: #fbf9f5;
+  --raised: #f1ede5;
+  --raised-2: #e8e3d9;
+  --label: #1d1b17;
+  --label-2: #5f5a52;
+  --accent: #7d5c1a;
+  --hairline: rgb(29 27 23 / 0.12);
+  --ink: #000000;
+
+  --glow: rgb(176 136 67 / 0.16);
+  --sheen: rgb(255 255 255 / 0.8);
+  --hl: rgb(255 255 255 / 0.9);
+  --glass-rgb: 255 255 255;
+  --glass-shadow: rgb(70 50 20 / 0.28);
+  --bar-rgb: 251 249 245;
+
+  --gold-1: #b08843;
+  --gold-2: #956e2c;
+  --gold-3: #765520;
+
+  --paper: #ffffff;
+  --paper-hl: transparent;
+  --paper-ring: rgb(29 27 23 / 0.08);
+  --paper-shadow: rgb(70 50 20 / 0.3);
 }
 
 @layer base {
   html {
-    color-scheme: dark;
-    background: var(--color-canvas);
+    background: var(--canvas);
     scroll-behavior: smooth;
     scroll-padding-top: 4rem;
     -webkit-text-size-adjust: 100%;
@@ -51,8 +122,8 @@
   body {
     margin: 0;
     min-height: 100svh;
-    background: var(--color-canvas);
-    color: var(--color-label);
+    background: var(--canvas);
+    color: var(--label);
     font-family: var(--font-sans);
     font-size: 1.0625rem; /* 17px: Apple's body size */
     font-optical-sizing: auto;
@@ -65,13 +136,13 @@
   }
 
   ::selection {
-    background: rgb(220 192 138 / 0.3);
-    color: var(--color-label);
+    background: color-mix(in srgb, var(--accent) 30%, transparent);
+    color: var(--label);
   }
 
   /* Never set border-radius here: it would reshape every focused pill. Elements bring their own. */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
 
@@ -93,7 +164,7 @@
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.011em;
-  color: var(--color-accent);
+  color: var(--accent);
 }
 
 /* Large text: tight leading, negative tracking, balanced lines. */
@@ -102,7 +173,7 @@
   font-size: clamp(2.25rem, 5.4vw, 3.75rem);
   line-height: 1.06;
   letter-spacing: -0.035em;
-  color: var(--color-label);
+  color: var(--label);
   text-wrap: balance;
 }
 
@@ -110,13 +181,13 @@
   font-size: clamp(1.1875rem, 1.6vw, 1.3125rem);
   line-height: 1.45;
   letter-spacing: -0.014em;
-  color: var(--color-label-2);
+  color: var(--label-2);
   text-wrap: pretty;
 }
 
-/* The numeral: warm ivory at the top falling to champagne, like light on a metal edge. */
+/* The numeral: light on the top edge falling to deeper champagne, like light on a metal edge. */
 .gold-text {
-  background: linear-gradient(180deg, #fbf4e4 0%, #e6cb93 52%, #b99a5f 100%);
+  background: linear-gradient(180deg, var(--gold-1) 0%, var(--gold-2) 52%, var(--gold-3) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -136,13 +207,13 @@
 
 /* Floating surfaces (menu, lightbox controls). Lighter material for smaller, interactive things. */
 .glass {
-  background: rgb(30 30 33 / var(--glass-alpha, 0.72));
+  background: rgb(var(--glass-rgb) / var(--glass-alpha, 0.72));
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgb(255 255 255 / 0.1);
+  border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
   box-shadow:
-    inset 0 0.5px 0 rgb(255 255 255 / 0.12),
-    0 16px 40px -16px rgb(0 0 0 / 0.8);
+    inset 0 0.5px 0 var(--hl),
+    0 16px 40px -16px var(--glass-shadow);
 }
 
 /* Navigation bar: transparent over the hero, becomes a material once content scrolls beneath it. */
@@ -155,8 +226,8 @@
 }
 
 .bar[data-scrolled='true'] {
-  background-color: rgb(0 0 0 / 0.7);
-  border-bottom-color: rgb(245 241 234 / 0.07);
+  background-color: rgb(var(--bar-rgb) / 0.7);
+  border-bottom-color: color-mix(in srgb, var(--ink) 8%, transparent);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
 }
@@ -184,14 +255,15 @@
 
 /* ---------- Letter ---------- */
 
-/* A single clean sheet: flat warm ivory, one soft shadow. No texture, no tilt, no inner frame. */
+/* A single clean sheet, one soft shadow. No texture, no tilt, no inner frame. */
 .paper {
-  background: #f4efe4;
+  background: var(--paper);
   color: #1f1c17;
   border-radius: 1.75rem;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.7),
-    0 40px 80px -40px rgb(0 0 0 / 0.9);
+    inset 0 1px 0 var(--paper-hl),
+    0 0 0 1px var(--paper-ring),
+    0 40px 80px -40px var(--paper-shadow);
 }
 
 /* ---------- Hero scroll cue ---------- */
@@ -210,6 +282,15 @@
   animation: scroll-cue 2.4s var(--ease-out-strong) infinite;
 }
 
+/* ---------- Switching theme ---------- */
+
+/* The whole page cross-fades (View Transitions) instead of flipping: no abrupt brightness jump. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 320ms;
+  animation-timing-function: var(--ease-out-strong);
+}
+
 /* ---------- Accessibility adaptations ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -224,33 +305,42 @@
     transition: opacity 150ms linear;
     transform: none !important;
   }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 150ms;
+  }
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .glass {
-    background: var(--color-raised-2);
+    background: var(--raised-2);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
   .bar[data-scrolled='true'] {
-    background-color: #000;
+    background-color: var(--canvas);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
 }
 
 @media (prefers-contrast: more) {
-  :root {
-    --color-label-2: #d4cfc5;
-    --color-hairline: rgb(245 241 234 / 0.4);
+  :root,
+  [data-theme='dark'] {
+    --label-2: #d4cfc5;
+    --hairline: rgb(245 241 234 / 0.4);
+  }
+  :root[data-theme='light'] {
+    --label-2: #3f3b35;
+    --hairline: rgb(29 27 23 / 0.4);
   }
   .glass {
-    background: var(--color-raised-2);
+    background: var(--raised-2);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
   .bar[data-scrolled='true'] {
-    background-color: #000;
+    background-color: var(--canvas);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }

@@ -1,6 +1,13 @@
 import { useReducedMotion } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { cn } from '../lib/cn'
+import { useTheme, type Theme } from '../lib/theme'
+
+/** Canvas can't read CSS variables cheaply, so each theme names its two colours (r,g,b). */
+const MOTE: Record<Theme, { halo: string; core: string }> = {
+  dark: { halo: '220,192,138', core: '246,232,196' },
+  light: { halo: '176,136,67', core: '149,110,44' },
+}
 
 interface Particle {
   x: number
@@ -25,12 +32,14 @@ interface SparklesProps {
 export function Sparkles({ active, className }: SparklesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reduce = useReducedMotion()
+  const theme = useTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas || reduce || !active) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+    const { halo, core } = MOTE[theme]
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     let width = 0
@@ -87,12 +96,12 @@ export function Sparkles({ active, className }: SparklesProps) {
 
         ctx.beginPath()
         ctx.arc(x, p.y, p.r * 4, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(220,192,138,${a * 0.06})`
+        ctx.fillStyle = `rgba(${halo},${a * 0.06})`
         ctx.fill()
 
         ctx.beginPath()
         ctx.arc(x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(246,232,196,${a})`
+        ctx.fillStyle = `rgba(${core},${a})`
         ctx.fill()
       }
 
@@ -104,7 +113,7 @@ export function Sparkles({ active, className }: SparklesProps) {
       cancelAnimationFrame(frameId)
       observer.disconnect()
     }
-  }, [active, reduce])
+  }, [active, reduce, theme])
 
   if (reduce) return null
 

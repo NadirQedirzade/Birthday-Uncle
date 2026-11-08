@@ -56,7 +56,7 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2.2, ease: easeOut }}
-        className="pointer-events-none absolute left-1/2 top-[40%] -z-10 size-[min(120vw,760px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(220_192_138/0.10),transparent)]"
+        className="pointer-events-none absolute left-1/2 top-[40%] -z-10 size-[min(120vw,760px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,var(--glow),transparent)]"
       />
 
       <motion.div
@@ -67,7 +67,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring.reveal, delay: 0.2 }}
-          className="inline-flex max-w-full items-center gap-2 rounded-full bg-white/[0.07] px-3.5 py-2 text-[0.8125rem] leading-snug tracking-[-0.006em] text-label-2 shadow-[inset_0_0_0_0.5px_rgb(255_255_255/0.1)]"
+          className="inline-flex max-w-full items-center gap-2 rounded-full bg-ink/[0.07] px-3.5 py-2 text-[0.8125rem] leading-snug tracking-[-0.006em] text-label-2 shadow-[inset_0_0_0_0.5px_color-mix(in_oklab,var(--ink)_10%,transparent)]"
         >
           <Gift size={15} strokeWidth={1.5} className="shrink-0 text-accent" aria-hidden="true" />
           {birthday.hero.giftNote}
@@ -133,7 +133,7 @@ export function Hero() {
           className="flex min-h-11 flex-col items-center gap-2.5 rounded-full px-5 py-2 text-[0.8125rem] text-label-2 transition-colors duration-200 hover:text-label"
         >
           <span>{birthday.hero.scrollLabel}</span>
-          <span aria-hidden="true" className="relative h-9 w-px overflow-hidden bg-white/15">
+          <span aria-hidden="true" className="relative h-9 w-px overflow-hidden bg-ink/15">
             <span className="scroll-cue absolute inset-x-0 top-0 h-1/2 bg-accent" />
           </span>
         </motion.a>

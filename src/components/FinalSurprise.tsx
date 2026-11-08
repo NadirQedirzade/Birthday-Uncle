@@ -32,7 +32,7 @@ export function FinalSurprise() {
         viewport={{ once: true, amount: 0.6 }}
         transition={spring.reveal}
         aria-hidden="true"
-        className="grid size-14 place-items-center rounded-full bg-white/[0.08] text-xl font-semibold tracking-[-0.03em] text-accent"
+        className="grid size-14 place-items-center rounded-full bg-ink/[0.08] text-xl font-semibold tracking-[-0.03em] text-accent"
       >
         {birthday.honoree.age}
       </motion.div>
@@ -72,7 +72,7 @@ export function FinalSurprise() {
         transition={{ duration: 1.2, ease: easeOut, delay: 1.9 }}
         className="mt-12"
       >
-        <span aria-hidden="true" className="mx-auto block h-px w-12 bg-white/20" />
+        <span aria-hidden="true" className="mx-auto block h-px w-12 bg-ink/20" />
         <p className="mt-7 text-[1.0625rem] text-label-2">
           {birthday.finale.closingPrefix}{' '}
           <span className="font-hand text-[2.5rem] leading-none text-label">{letter.signature}</span>.

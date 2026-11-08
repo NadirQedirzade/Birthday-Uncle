@@ -9,7 +9,7 @@ import { spring } from '../lib/motion'
  */
 
 const pill =
-  'inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-full bg-white/10 px-7 text-[1.0625rem] font-medium tracking-[-0.011em] text-label shadow-[inset_0_0.5px_0_rgb(255_255_255/0.14)] transition-colors duration-200 hover:bg-white/[0.16] active:bg-white/20'
+  'inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-full bg-ink/10 px-7 text-[1.0625rem] font-medium tracking-[-0.011em] text-label shadow-[inset_0_0.5px_0_var(--hl)] transition-colors duration-200 hover:bg-ink/[0.16] active:bg-ink/20'
 
 export function PillLink({ className, children, ...props }: HTMLMotionProps<'a'>) {
   return (
@@ -31,7 +31,7 @@ export function IconButton({ className, children, ...props }: HTMLMotionProps<'b
       whileTap={{ scale: 0.92 }}
       transition={spring.press}
       className={cn(
-        'inline-flex size-11 shrink-0 select-none items-center justify-center rounded-full text-label transition-colors duration-200 hover:bg-white/10 active:bg-white/15 disabled:pointer-events-none disabled:opacity-35',
+        'inline-flex size-11 shrink-0 select-none items-center justify-center rounded-full text-label transition-colors duration-200 hover:bg-ink/10 active:bg-ink/15 disabled:pointer-events-none disabled:opacity-35',
         className,
       )}
       {...props}

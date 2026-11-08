@@ -144,6 +144,7 @@ export function Lightbox({ items, openId, origin, direction, onClose, onNavigate
           ref={dialogRef}
           role="dialog"
           aria-modal="true"
+          data-theme="dark"
           aria-label="Fotoşəkil görüntüləyicisi"
           className="fixed inset-0 z-50"
           variants={fade}

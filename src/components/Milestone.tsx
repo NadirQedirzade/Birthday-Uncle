@@ -17,7 +17,7 @@ const TICKS = birthday.honoree.age
 /** One tick per year. It lights up as the counter passes it. Every fifth tick is longer. */
 function Tick({ index, count }: { index: number; count: MotionValue<number> }) {
   const stroke = useTransform(count, (v) =>
-    v >= index + 1 ? 'rgb(220 192 138)' : 'rgb(245 241 234 / 0.14)',
+    v >= index + 1 ? 'var(--accent)' : 'color-mix(in oklab, var(--ink) 14%, transparent)',
   )
   const major = index % 5 === 4
 

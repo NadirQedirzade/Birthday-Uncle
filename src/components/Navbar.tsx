@@ -6,6 +6,7 @@ import { useScrollSpy } from '../hooks/useScrollSpy'
 import { cn } from '../lib/cn'
 import { easeOut, spring } from '../lib/motion'
 import { IconButton } from './Button'
+import { ThemeToggle } from './ThemeToggle'
 
 const ids = birthday.nav.map((item) => item.id)
 
@@ -70,7 +71,7 @@ export function Navbar() {
               aria-label={birthday.a11y.backHome}
               className="flex min-h-11 items-center gap-2.5 rounded-full pr-3"
             >
-              <span className="grid size-8 place-items-center rounded-full bg-white/[0.08] text-[0.8125rem] font-semibold tracking-[-0.02em] text-accent">
+              <span className="grid size-8 place-items-center rounded-full bg-ink/[0.08] text-[0.8125rem] font-semibold tracking-[-0.02em] text-accent">
                 50
               </span>
               <span className="hidden text-[0.9375rem] font-semibold tracking-[-0.011em] text-label sm:block">
@@ -78,8 +79,9 @@ export function Navbar() {
               </span>
             </a>
 
-            {/* Negative end margin: the last label (not its pill) lands on the content edge. */}
-            <ul className="hidden items-center md:-mr-3.5 md:flex">
+            {/* Negative end margin: the last control's glyph lands on the content edge. */}
+            <div className="-mr-2.5 flex items-center md:-mr-3">
+            <ul className="hidden items-center md:flex">
               {birthday.nav.map((item) => {
                 const isActive = active === item.id
                 return (
@@ -96,7 +98,7 @@ export function Navbar() {
                         <motion.span
                           layoutId="nav-indicator"
                           transition={spring.indicator}
-                          className="absolute inset-x-0 inset-y-1.5 rounded-full bg-white/10"
+                          className="absolute inset-x-0 inset-y-1.5 rounded-full bg-ink/10"
                         />
                       )}
                       <span className="relative">{item.label}</span>
@@ -106,9 +108,11 @@ export function Navbar() {
               })}
             </ul>
 
+            <ThemeToggle />
+
             <IconButton
               ref={buttonRef}
-              className="-mr-2.5 md:hidden"
+              className="md:hidden"
               aria-label={open ? birthday.a11y.closeMenu : birthday.a11y.openMenu}
               aria-expanded={open}
               aria-controls="mobile-menu"
@@ -127,6 +131,7 @@ export function Navbar() {
                 </motion.span>
               </AnimatePresence>
             </IconButton>
+            </div>
           </nav>
 
           {/* Sibling of the bar content: anchored to the trigger, so it grows from the top-right. */}
@@ -151,7 +156,7 @@ export function Navbar() {
                           aria-current={isActive ? 'location' : undefined}
                           onClick={() => setOpen(false)}
                           className={cn(
-                            'flex min-h-12 items-center justify-between rounded-2xl px-4 text-[1.0625rem] font-medium tracking-[-0.011em] transition-colors duration-150 hover:bg-white/10 active:bg-white/15',
+                            'flex min-h-12 items-center justify-between rounded-2xl px-4 text-[1.0625rem] font-medium tracking-[-0.011em] transition-colors duration-150 hover:bg-ink/10 active:bg-ink/15',
                             isActive ? 'text-label' : 'text-label-2',
                           )}
                         >

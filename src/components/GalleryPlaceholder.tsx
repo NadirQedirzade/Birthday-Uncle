@@ -20,11 +20,11 @@ export function GalleryPlaceholder({ caption, index }: GalleryPlaceholderProps) 
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_75%_at_50%_0%,rgb(255_255_255/0.075),transparent_62%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_75%_at_50%_0%,var(--sheen),transparent_62%)]"
       />
 
       {/* Compact on phones: a landscape tile is only ~110px tall there, and nothing may be clipped. */}
-      <span className="relative mb-1 grid size-8 shrink-0 place-items-center rounded-full bg-white/[0.06] shadow-[inset_0_0_0_0.5px_rgb(255_255_255/0.1)] sm:mb-3 sm:size-12">
+      <span className="relative mb-1 grid size-8 shrink-0 place-items-center rounded-full bg-ink/[0.06] shadow-[inset_0_0_0_0.5px_color-mix(in_oklab,var(--ink)_10%,transparent)] sm:mb-3 sm:size-12">
         <ImageGlyph
           size={22}
           strokeWidth={1.25}
