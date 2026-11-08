@@ -1,0 +1,257 @@
+/*
+  Self-hosted fonts (no external requests). Both are variable fonts with an optical-size axis, so
+  type changes shape as it scales, the way SF Pro and New York do. Subsets are loaded on demand
+  by unicode-range; latin-ext carries ə, ş, ğ, ı, ö, ü, ç.
+*/
+@import '@fontsource-variable/inter/opsz.css';
+@import '@fontsource-variable/source-serif-4/opsz.css';
+@import '@fontsource-variable/source-serif-4/opsz-italic.css';
+@import '@fontsource/caveat/latin-500.css';
+@import '@fontsource/caveat/latin-ext-500.css';
+
+@import 'tailwindcss';
+
+/*
+  Design tokens (HIG: prefer semantic names over raw values).
+
+  Palette: true black, warm ivory text, one champagne accent. Nothing else.
+  Contrast on --color-canvas: label ≈ 18:1, label-2 ≈ 8:1, accent ≈ 12:1 (all above WCAG AAA for body).
+
+  Type: SF Pro on Apple devices (via -apple-system), Inter everywhere else. A text serif is kept for
+  the human voice only: the tagline, the letter and the love line.
+*/
+@theme static {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Inter Variable', system-ui, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Source Serif 4 Variable', ui-serif, 'Iowan Old Style', 'Palatino Linotype', Georgia,
+    serif;
+  --font-hand: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
+
+  --color-canvas: #000000;
+  --color-raised: #121214;
+  --color-raised-2: #1b1b1e;
+  --color-label: #f5f1ea;
+  --color-label-2: #a9a49b;
+  --color-accent: #dcc08a;
+  --color-hairline: rgb(245 241 234 / 0.1);
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-canvas);
+    scroll-behavior: smooth;
+    scroll-padding-top: 4rem;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background: var(--color-canvas);
+    color: var(--color-label);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem; /* 17px: Apple's body size */
+    font-optical-sizing: auto;
+    line-height: 1.47;
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: rgb(220 192 138 / 0.3);
+    color: var(--color-label);
+  }
+
+  /* Never set border-radius here: it would reshape every focused pill. Elements bring their own. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+}
+
+/* ---------- Typography (size-specific tracking and leading) ---------- */
+
+/* Eyebrow: sentence case, semibold, accent. Small text keeps near-neutral tracking. */
+.eyebrow {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.011em;
+  color: var(--color-accent);
+}
+
+/* Large text: tight leading, negative tracking, balanced lines. */
+.heading {
+  font-weight: 600;
+  font-size: clamp(2.25rem, 5.4vw, 3.75rem);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  color: var(--color-label);
+  text-wrap: balance;
+}
+
+.lead {
+  font-size: clamp(1.1875rem, 1.6vw, 1.3125rem);
+  line-height: 1.45;
+  letter-spacing: -0.014em;
+  color: var(--color-label-2);
+  text-wrap: pretty;
+}
+
+/* The numeral: warm ivory at the top falling to champagne, like light on a metal edge. */
+.gold-text {
+  background: linear-gradient(180deg, #fbf4e4 0%, #e6cb93 52%, #b99a5f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Words slide up from behind a mask. Padding keeps ascenders/descenders (ş, ç, ə) from clipping. */
+.split-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0.04em 0.07em 0.16em;
+  margin: -0.04em -0.07em -0.16em;
+}
+
+/* ---------- Materials ---------- */
+
+/* Floating surfaces (menu, lightbox controls). Lighter material for smaller, interactive things. */
+.glass {
+  background: rgb(30 30 33 / var(--glass-alpha, 0.72));
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow:
+    inset 0 0.5px 0 rgb(255 255 255 / 0.12),
+    0 16px 40px -16px rgb(0 0 0 / 0.8);
+}
+
+/* Navigation bar: transparent over the hero, becomes a material once content scrolls beneath it. */
+.bar {
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 300ms var(--ease-out-strong),
+    border-color 300ms var(--ease-out-strong);
+}
+
+.bar[data-scrolled='true'] {
+  background-color: rgb(0 0 0 / 0.7);
+  border-bottom-color: rgb(245 241 234 / 0.07);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* ---------- Gallery ---------- */
+
+.tile-caption {
+  transition:
+    opacity 300ms var(--ease-out-strong),
+    transform 300ms var(--ease-out-strong);
+}
+
+/* Only hide the caption where hover exists; touch devices always see it. */
+@media (hover: hover) and (pointer: fine) {
+  .tile-caption {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .group:hover .tile-caption,
+  .group:focus-visible .tile-caption {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Letter ---------- */
+
+/* A single clean sheet: flat warm ivory, one soft shadow. No texture, no tilt, no inner frame. */
+.paper {
+  background: #f4efe4;
+  color: #1f1c17;
+  border-radius: 1.75rem;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.7),
+    0 40px 80px -40px rgb(0 0 0 / 0.9);
+}
+
+/* ---------- Hero scroll cue ---------- */
+
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-110%);
+  }
+  70%,
+  100% {
+    transform: translateY(210%);
+  }
+}
+
+.scroll-cue {
+  animation: scroll-cue 2.4s var(--ease-out-strong) infinite;
+}
+
+/* ---------- Accessibility adaptations ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .scroll-cue {
+    animation: none;
+    transform: translateY(40%);
+  }
+  .tile-caption {
+    transition: opacity 150ms linear;
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: var(--color-raised-2);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .bar[data-scrolled='true'] {
+    background-color: #000;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-label-2: #d4cfc5;
+    --color-hairline: rgb(245 241 234 / 0.4);
+  }
+  .glass {
+    background: var(--color-raised-2);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .bar[data-scrolled='true'] {
+    background-color: #000;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
